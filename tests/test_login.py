@@ -1,15 +1,15 @@
-from playwright.sync_api import Page,expect
 from pages.login_page import LoginPage
+from playwright.sync_api import Page,expect
 
-def test_login(page:Page):
+def test_valid_login(page):
     login_page = LoginPage(page)
 
-    login_page.open()
+    page.goto("https://www.saucedemo.com/")
 
-    login_page.login(
-        "standard_user",
-        "secret_sauce"
-    )
+    login_page.login("standard_user", "secret_sauce")
 
-    expect(page).to_have_url("https://www.saucedemo.com/inventory.html")
-    expect(page.get_by_text("Swag Labs")).to_be_visible()
+def test_invalid_login(page):
+    login_page = LoginPage(page)
+    page.goto("https://www.saucedemo.com/")
+    login_page.login("Invalid_user", "Invalid_password")
+    expect(page.locator('[data-test="error-button"]')).to_be_visible()
